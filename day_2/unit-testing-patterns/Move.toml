@@ -1,0 +1,6 @@
+[package]
+name = "unit_testing_patterns"
+edition = "2024.beta"
+
+[addresses]
+unit_testing_patterns = "0x0"

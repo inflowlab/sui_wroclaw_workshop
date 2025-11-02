@@ -1,0 +1,6 @@
+[package]
+name = "objects_demo"
+edition = "2024.beta"
+
+[addresses]
+objects_demo = "0x0"

@@ -1,12 +1,10 @@
-module hello_lab::hello {
+module hello_move_lab::hello;
+
     use std::string::{Self, String};
-    use sui::tx_context::{Self, TxContext};
-    use sui::object::{Self, UID};
-    use sui::transfer;
 
     /// A simple on-chain object holding a message.
     /// `has key` gives it a unique on-chain identity (Object ID).
-    struct Greeting has key {
+    public struct Greeting has key {
         id: UID,
         message: String,
     }
@@ -26,14 +24,13 @@ module hello_lab::hello {
     /// - Creates a fresh UID using the transaction context
     /// - Stores the provided message
     /// - Transfers ownership to the transaction sender
-    public entry fun create_greeting(message: String, ctx: &mut TxContext) {
+    public fun create_greeting(message: String, ctx: &mut TxContext) {
         let g = Greeting { id: object::new(ctx), message };
         transfer::transfer(g, tx_context::sender(ctx));
     }
 
     /// ENTRY: Transfer an owned Greeting to another address.
     /// Consumes the Greeting object and moves it to `recipient`.
-    public entry fun transfer_greeting(g: Greeting, recipient: address) {
+    public fun transfer_greeting(g: Greeting, recipient: address) {
         transfer::transfer(g, recipient);
     }
-}

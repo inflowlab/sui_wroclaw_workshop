@@ -1,6 +1,6 @@
-module hello_lab::hello_tests {
+module hello_move_lab::hello_tests {
     use std::string;
-    use hello_lab::hello;
+    use hello_move_lab::hello;
 
     /// Unit test for greet()
     #[test]

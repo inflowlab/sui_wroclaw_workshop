@@ -35,10 +35,8 @@ hello-move-lab/
 ├─ Move.toml
 ├─ sources/
 │  └─ hello.move
-├─ tests/
-│  └─ hello_tests.move
-└─ scripts/
-   └─ demo.md
+└─ tests/
+   └─ hello_tests.move
 ```
 
 - `hello.move` — minimal module with:
@@ -46,7 +44,6 @@ hello-move-lab/
   - `add(a,b)` pure math
   - entry `create_greeting(msg)` that creates a **Greeting** object and transfers it to the sender
 - `hello_tests.move` — unit tests for pure functions
-- `scripts/demo.md` — copy‑paste CLI to build, publish, call, and inspect
 
 ---
 
@@ -104,7 +101,7 @@ sui client call \
   --package $PACKAGE_ID \
   --module hello \
   --function create_greeting \
-  --args "Hello, Sui!" \
+  --args "Hello, Sui" \
   --gas-budget 20000000
 ```
 
@@ -114,7 +111,7 @@ sui client call `
   --package $Env:PACKAGE_ID `
   --module hello `
   --function create_greeting `
-  --args "Hello, Sui!" `
+  --args "Hello, Sui" `
   --gas-budget 20000000
 ```
 
@@ -125,7 +122,7 @@ sui client call `
 List objects you own and find **Greeting**:
 
 ```bash
-sui client objects --owner $(sui client active-address)
+sui client objects $(sui client active-address)
 ```
 
 Look for something like:
@@ -138,7 +135,7 @@ Version: 1
 
 You can also fetch one object by ID:
 ```bash
-sui client object --id <OBJECT_ID>
+sui client object <OBJECT_ID>
 ```
 
 ---

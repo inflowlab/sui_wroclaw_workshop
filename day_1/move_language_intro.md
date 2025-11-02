@@ -39,10 +39,15 @@ module my_app::hello {
 
 ## 🏗️ 3️⃣ Structs — Custom Data Types
 
-A `struct` defines a new data type.
+- A `struct` defines a custom type with named fields. It’s the core way to model assets and other data in Move. 
+move-book.com
+- Default behavior: structs are linear and ephemeral → by default they cannot be copied, dropped, or stored; you must move/handle them explicitly. Abilities relax these restrictions
+- Fields can be any non-reference type, including other structs. Recursive structs are not allowed (a struct can’t contain itself).
+- Struct types can only be created ("packed"), destroyed ("unpacked") inside the module that defines the struct.
+- The fields of a struct are only accessible inside the module that defines the struct.
 
 ```move
-struct Counter has key {
+public struct Counter has key {
     id: UID,
     value: u64
 }
@@ -52,9 +57,10 @@ struct Counter has key {
 - `value: u64` → simple integer field
 - `has key` → gives it **object identity** on-chain
 
+
 ### Example: a plain struct (no key)
 ```move
-struct Point has copy, drop {
+public struct Point has copy, drop {
     x: u64,
     y: u64,
 }
@@ -67,18 +73,21 @@ struct Point has copy, drop {
 ## 🧱 4️⃣ Abilities — What a Type Can Do
 
 Abilities are **permissions** that control how values can be used.
+If you don’t declare an ability, you don’t have it; the compiler enforces this at type-check time.
 
 | Ability | Meaning | Example |
 |----------|----------|----------|
 | **copy** | Can be duplicated | numbers, strings |
-| **drop** | Can be discarded | temporary data |
-| **store** | Can be stored inside another struct | persistent fields |
-| **key** | Gives global identity (used for objects) | Sui objects |
+| **drop** | Can be discarded at end of scope | temporary data |
+| **store** | Can be stored inside another struct or global storage | persistent fields |
+| **key** | Gives global identity (used for objects) for storage/lookup (Sui uses this for objects) | Sui objects |
 
+
+On Sui, a struct with key is an object type and must have its first field exactly id: UID. This gives the object a unique on-chain identity. Also, fields of an object must satisfy ability rules (e.g., embedded types need store).
 **Example:**
 
 ```move
-struct Coin has store, key {
+public struct Coin has store, key {
     id: UID,
     balance: u64
 }
@@ -86,6 +95,25 @@ struct Coin has store, key {
 
 Without proper abilities, certain operations (like storing inside another object) will fail at compile time.
 
+### Usage Patterns
+- **Asset/resource modeling:** Use default (no copy, no drop) or omit copy/drop to force linear handling. This is ideal for tokens, NFTs, tickets.
+
+- **Utility/value types:** Add copy, drop for lightweight data (e.g., points, small config).
+
+- **Composable state:** Nest structs; to embed a type inside an object (has key), the embedded type must have store. 
+
+- **Sui objects:** Model user-owned state as `struct X has key { id: UID, ... }`; create with object::new, transfer with transfer::transfer.
+
+### Rules & Gotchas
+- **Defaults are strict:** Without abilities, a struct **can’t be copied, dropped, or stored**. Handle/move it explicitly or add abilities. 
+
+- **Non-recursive:** You can’t define a struct that contains itself (directly or indirectly via the same type). 
+
+- **Embedding inside objects:** If `Foo has key` contains field `bar: Bar`, then `Bar` must have `store`. 
+
+- **Sui object rule:** If `has key` on Sui, first field must be `id: UID` (verifier enforces uniqueness); no object can have `copy/drop` because `UID` lacks them. 
+
+- **Abilities are checked transitively:** If you store type `T` inside another, `T` must have the abilities required by the context (notably `store`).
 ---
 
 ## ⚙️ 5️⃣ Functions
