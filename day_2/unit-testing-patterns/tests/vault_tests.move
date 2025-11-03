@@ -1,5 +1,5 @@
 module unit_testing_patterns::vault_tests {
-    use unit_testing_patterns::vault;
+    use unit_testing_patterns::vault::{Self, Vault};
 
     #[test] 
     public fun deposit_then_withdraw() {
@@ -9,7 +9,7 @@ module unit_testing_patterns::vault_tests {
         vault::withdraw(&mut v, 7);
         assert!(vault::balance(&v) == 3, 2);
     }
-    
+
     #[test] 
     #[expected_failure] 
     public fun withdraw_over_balance_aborts() {

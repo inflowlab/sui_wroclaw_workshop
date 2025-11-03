@@ -9,6 +9,7 @@ module unit_testing_patterns::tiny_counter {
     public fun create(ctx: &mut TxContext) {
         let me = tx_context::sender(ctx);
         let c = MyCounter { id: object::new(ctx), owner: me, value: 0 };
+        transfer::transfer(c, ctx.sender());
         // In a real contract, transfer c to me; scenario tests can simulate flows as needed.
     }
 

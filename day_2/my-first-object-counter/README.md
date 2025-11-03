@@ -60,7 +60,7 @@ sui client call   --package $PACKAGE_ID   --module counter   --function create_c
 
 Find your Counter object:
 ```bash
-sui client objects --owner $(sui client active-address) | grep Counter
+sui client objects $(sui client active-address) --json | grep Counter
 # export COUNTER_ID=0x...
 ```
 

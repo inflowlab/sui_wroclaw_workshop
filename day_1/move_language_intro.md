@@ -37,7 +37,78 @@ module my_app::hello {
 
 ---
 
-## 🏗️ 3️⃣ Structs — Custom Data Types
+## 🧱 3️⃣ Data types (Move)
+
+**Primitives**: `bool`, unsigned integers `u8 | u16 | u32 | u64 | u128 | u256`, `address`.  
+Common library types: `vector<T>`, `string::String`, `option::Option<T>`.  
+- Integer ops: `+ - * / %` (division/modulo abort on 0; addition/multiplication can abort on overflow unless platform provides checked ops).  
+- Literals: `true/false`, numeric like `123u64`, addresses `@0xabc`.  
+- Generics: structs and functions can be generic over types: `struct Box<T> { v: T }`.
+
+> On Sui, `UID` is a special type used as the first field of any `has key` object.
+
+```move
+module examples::data_types {
+    use std::vector;
+    use std::string::{Self, String};
+    use std::option::{Self, Option};
+
+    public fun basics(a: u64, b: u64, addr: address): (u64, bool, address, vector<u8>, Option<u64>) {
+        let sum = a + b;
+        let ok = sum > 0;
+        let bytes: vector<u8> = b"hello".to_vec();
+        let maybe: Option<u64> = option::some(sum);
+        (sum, ok, addr, bytes, maybe)
+    }
+}
+```
+
+---
+
+## 🧶 4️⃣ Variables & scope
+
+- Declare with `let` (optionally `mut` for rebinding): `let x = 0; let mut y = 1; y = y + 1;`  
+- **Scope** is block-based: variables live until the end of the `{ ... }` block they’re declared in.  
+- Almost everything in Move is an **expression**; the last expression in a block is the return value (omit semicolon to return it).  
+- Resources (types without `drop`) must be **moved**, **stored**, or **returned** by the end of scope—cannot be silently dropped.
+
+```move
+public fun scope_example(n: u64): u64 {
+    let mut acc = 0;
+    {
+        let t = 5;
+        acc = acc + t;
+    } // t out of scope here
+    acc // returned
+}
+```
+
+---
+
+## 🔁 5️⃣ Control flow
+
+Move supports standard control flow:
+- `if / else` expressions
+- loops: `while (cond) { ... }` and `loop { ... }`
+- `break`, `continue`, `return`
+
+```move
+public fun sum_to(n: u64): u64 {
+    let mut i = 0;
+    let mut s = 0;
+    while (i <= n) {
+        s = s + i;
+        i = i + 1;
+    };
+    if (s > 0) s else 0
+}
+```
+
+> Loops are expressions of type `()`; use them for side effects. Prefer explicit termination to avoid infinite loops.
+
+---
+
+## 🏗️ 6️⃣ Structs — Custom Data Types
 
 - A `struct` defines a custom type with named fields. It’s the core way to model assets and other data in Move. 
 move-book.com
@@ -70,7 +141,7 @@ public struct Point has copy, drop {
 
 ---
 
-## 🧱 4️⃣ Abilities — What a Type Can Do
+## 🧱 7️⃣ Abilities — What a Type Can Do
 
 Abilities are **permissions** that control how values can be used.
 If you don’t declare an ability, you don’t have it; the compiler enforces this at type-check time.
@@ -116,7 +187,7 @@ Without proper abilities, certain operations (like storing inside another object
 - **Abilities are checked transitively:** If you store type `T` inside another, `T` must have the abilities required by the context (notably `store`).
 ---
 
-## ⚙️ 5️⃣ Functions
+## ⚙️ 8️⃣ Functions
 
 Functions are declared with `fun` and can be:
 - **private (default)** – visible only in the same module
@@ -145,7 +216,7 @@ let result = math::add(5, 10);
 
 ---
 
-## 🚪 6️⃣ Entry Functions
+## 🚪 9️⃣ Entry Functions
 
 **Entry functions** are transaction entry points.  
 They are invoked directly by users through the **Sui CLI**.
@@ -178,10 +249,6 @@ Explanation:
 - `object::new(ctx)` → creates a new unique object ID
 - `transfer::transfer` → moves ownership to a specific address
 
----
-
-## 🧩 7️⃣ Entry Function Example — Using CLI
-
 Once built and published, you can call the function via:
 
 ```bash
@@ -195,7 +262,47 @@ sui client call   --package <PACKAGE_ID>   --module counter   --function increme
 
 ---
 
-## 🧮 8️⃣ Summary
+## 🧩 🔟 Functions parameters & references
+
+Functions define reusable logic.  
+They can accept parameters **by value**, **by immutable reference**, or **by mutable reference**.
+
+Move has two reference types:
+- **Immutable reference** `&T` — read-only access to a value.
+- **Mutable reference** `&mut T` — allows in-place mutation of fields.
+
+And **by value** parameters **move** ownership into the function.
+
+```move
+module examples::params {
+    use std::string::{Self, String};
+
+    // By value: consumes the String (caller can no longer use it)
+    public fun takes_value(s: String): u64 {
+        string::length(&s)
+    }
+
+    // Immutable reference: borrow to read without taking ownership
+    public fun len_ref(s: &String): u64 {
+        string::length(s)
+    }
+
+    // Mutable reference: mutate in-place (caller must have a mutable variable)
+    public fun push_line(s: &mut String, line: &String) {
+        *s = *s + string::utf8(b"\n") + line.clone();
+    }
+}
+```
+
+Rules of thumb:
+- You can derive `&T` from any value; you can derive `&mut T` only from a **unique, mutable** variable and there can be **no other active references** to that value while `&mut` is in use.
+- You **cannot** destroy or transfer a value through a reference; references provide controlled access only.
+- Prefer references to avoid unnecessary moves for large values; pass by value when you want to **consume** the value (e.g., transfer ownership of an object).
+
+
+---
+
+## 🧮 1️⃣1️⃣ Summary
 
 ✅ **Modules** group related structs and functions.  
 ✅ **Structs** define data types and objects.  

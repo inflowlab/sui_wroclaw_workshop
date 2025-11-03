@@ -1,6 +1,6 @@
 module unit_testing_patterns::vault {
 
-    public struct Vault has store { balance: u64 }
+    public struct Vault has store, drop { balance: u64 }
 
     const ERR_NO_FUNDS: u64 = 200;
 
@@ -12,6 +12,6 @@ module unit_testing_patterns::vault {
         assert!(v.balance >= amount, ERR_NO_FUNDS);
         v.balance = v.balance - amount;
     }
-    
+
     public fun balance(v: &Vault): u64 { v.balance }
 }
