@@ -1,4 +1,4 @@
-module patterns::witness {
+module patterns_best_practices::witness {
     use std::string::{Self, String};
     use sui::object::{Self, UID};
     use sui::tx_context::{Self, TxContext};
@@ -15,7 +15,7 @@ module patterns::witness {
     public struct Seal has key { id: UID, tag: String }
 
     /// ENTRY: grant AdminCap to the publisher (for CLI demo).
-    public entry fun init(ctx: &mut TxContext) {
+    fun init(ctx: &mut TxContext) {
         let cap = AdminCap { id: object::new(ctx) };
         transfer::transfer(cap, tx_context::sender(ctx));
     }
@@ -30,16 +30,18 @@ module patterns::witness {
         // No-op; see tests that call `new_witness_for_test` instead.
     }
 
+    /// Require a &Witness to mint a Seal object.
+    public fun mint_with_witness(_w: &Witness, tag: String, ctx: &mut TxContext): Seal {
+        Seal { id: object::new(ctx), tag }
+    }
+
     /// TEST helper: create AdminCap and return it (no transfer).
+    #[test_only]
     public fun new_admin_for_test(ctx: &mut TxContext): AdminCap {
         AdminCap { id: object::new(ctx) }
     }
 
     /// TEST helper: mint a fresh Witness value (would be gated by AdminCap in prod).
+    #[test_only]
     public fun new_witness_for_test(): Witness { Witness {} }
-
-    /// Require a &Witness to mint a Seal object.
-    public fun mint_with_witness(_w: &Witness, tag: String, ctx: &mut TxContext): Seal {
-        Seal { id: object::new(ctx), tag }
-    }
 }

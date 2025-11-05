@@ -1,7 +1,7 @@
-module patterns::witness_tests {
+module patterns_best_practices::witness_tests {
     use sui::test_scenario;
     use std::string;
-    use patterns::witness;
+    use patterns_best_practices::witness;
 
     #[test]
     public fun mint_with_witness_succeeds() {

@@ -1,7 +1,7 @@
-module patterns::capability_tests {
+module patterns_best_practices::capability_tests {
     use sui::test_scenario;
     use std::string;
-    use patterns::capability;
+    use patterns_best_practices::capability;
 
     #[test]
     public fun can_mint_with_cap() {

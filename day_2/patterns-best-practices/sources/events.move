@@ -1,4 +1,4 @@
-module patterns::events {
+module patterns_best_practices::events {
     use std::string::{Self, String};
     use sui::object::{Self, UID};
     use sui::tx_context::{Self, TxContext};

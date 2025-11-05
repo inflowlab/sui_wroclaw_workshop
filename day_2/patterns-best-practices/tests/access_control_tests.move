@@ -1,7 +1,7 @@
-module patterns::access_control_tests {
+module patterns_best_practices::access_control_tests {
     use sui::test_scenario;
     use std::string;
-    use patterns::access_control;
+    use patterns_best_practices::access_control;
 
     #[test]
     public fun owner_appends_ok() {
