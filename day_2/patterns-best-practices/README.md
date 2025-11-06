@@ -4,16 +4,12 @@ Focus:
 - Capability pattern
 - Events
 - Basic access control
-- Gas & gotchas
-
-See `scripts/demo.md` for CLI walkthrough and `docs/gas_gotchas.md` for gas notes.
 
 ---
 
 ## ➕ Add-ons in this pack (advanced)
 
-- **Witness pattern** (`witness.move`): issue a `Witness` (optionally via `AdminCap`) and require `&Witness` to mint a `Seal` object.
-- **Fully-wired tests** (`tests/*.move`): positive/negative for capability, access control, witness, dynamic fields.
+- **Fully-wired tests** (`tests/*.move`): positive/negative for capability, access control, .
 
 Run all tests:
 ```bash
@@ -83,36 +79,3 @@ sui client call \
   --args $NOTE_ID "world" \
   --gas-budget 200000000
 ```
-
-
-## Witness pattern (advanced)
-```bash
-# (Optional) Get AdminCap
-sui client call \
-  --package $PACKAGE_ID \
-  --module witness \
-  --function init \
-  --gas-budget 200000000
-
-# In tests we use new_witness_for_test(); for CLI, prefer handing capabilities as objects.
-```
-
-## Dynamic fields (attributes)
-```bash
-sui client call \
-  --package $PACKAGE_ID \
-  --module dynamic_fields \
-  --function create \
-  --gas-budget 200000000
-
-sui client objects --owner $(sui client active-address) | grep Profile
-export PROFILE_ID=<...>
-
-sui client call \
-  --package $PACKAGE_ID \
-  --module dynamic_fields \
-  --function set_attr \
-  --args $PROFILE_ID "color" "blue" \
-  --gas-budget 200000000
-```
-

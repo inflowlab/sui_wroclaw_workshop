@@ -1,8 +1,5 @@
 module patterns_best_practices::access_control {
     use std::string::{Self, String};
-    use sui::object::{Self, UID};
-    use sui::tx_context::{Self, TxContext};
-    use sui::transfer;
 
     const ERR_NOT_OWNER: u64 = 1;
 
@@ -16,20 +13,28 @@ module patterns_best_practices::access_control {
 
     public fun append_line(n: &mut Notebook, line: String, ctx: &mut TxContext) {
         assert!(tx_context::sender(ctx) == n.owner, ERR_NOT_OWNER);
-        n.body = n.body + string::utf8(b"\n") + line;
+        string::append(&mut n.body, string::utf8(b"\n"));
+        string::append(&mut n.body, line);
     }
 
     public fun get_body(n: &Notebook): String { n.body }
 
-    public fun transfer_note(n: &mut Notebook, new_owner: address, ctx: &mut TxContext) {
+    public fun transfer_note(n: Notebook, new_owner: address, ctx: &mut TxContext) {
         assert!(tx_context::sender(ctx) == n.owner, ERR_NOT_OWNER);
-        n.owner = new_owner;
-        transfer::transfer(n, new_owner);
+        let mut new_n = n;
+        new_n.owner = new_owner;
+        transfer::transfer(new_n, new_owner);
     }
 
     /// TEST helper: create without transfer, return Notebook
     #[test_only]
     public fun create_for_test(body: String, ctx: &mut TxContext): Notebook {
         Notebook { id: object::new(ctx), owner: tx_context::sender(ctx), body }
+    }
+
+    #[test_only]
+    public fun destruct_for_test(note: Notebook) {
+        let Notebook { id, owner, body } = note;
+        id.delete();
     }
 }
