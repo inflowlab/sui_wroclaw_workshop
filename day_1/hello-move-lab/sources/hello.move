@@ -32,5 +32,5 @@ module hello_move_lab::hello;
     /// ENTRY: Transfer an owned Greeting to another address.
     /// Consumes the Greeting object and moves it to `recipient`.
     public fun transfer_greeting(g: Greeting, recipient: address) {
-        transfer::transfer(g, recipient);
+        transfer::transfer(g, recipient); //TODO Transfer the Greeting obj to recipient
     }

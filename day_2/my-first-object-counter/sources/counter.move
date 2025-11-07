@@ -12,31 +12,30 @@ module my_first_object_counter::counter {
 
     /// Create a new MyCounter owned by the transaction sender, starting at 0.
     public fun create_counter(ctx: &mut TxContext) {
-        let me = tx_context::sender(ctx);
-        let c = MyCounter { id: object::new(ctx), owner: me, value: 0 };
-        transfer::transfer(c, me);
+        let me = tx_context::sender(ctx); //TODO: get a sender address
+        let c = MyCounter { id: object::new(ctx), owner: me, value: 0 }; //TODO: create MyCounter object
+        transfer::transfer(c, me); //TODO: transfer a counter object to the sender
     }
 
     /// Owner‑only: increment the counter by 1.
     /// Takes &mut Counter which proves caller owns the object.
-    public fun increment(c: &mut MyCounter, ctx: &mut TxContext) {
-        assert!(tx_context::sender(ctx) == c.owner, ERR_NOT_OWNER);
-        c.value = c.value + 1;
+    public fun increment(c: &mut MyCounter, ctx: &mut TxContext) { //Why do we pass parameter as &mut
+        assert!(tx_context::sender(ctx) == c.owner, ERR_NOT_OWNER); //TODO: check if it's an owner
+        c.value = c.value + 1; //TODO: increment value (+1)
     }
 
     /// Owner‑only: reset the counter to 0.
     public fun reset(c: &mut MyCounter, ctx: &mut TxContext) {
-        assert!(tx_context::sender(ctx) == c.owner, ERR_NOT_OWNER);
-        c.value = 0;
+        assert!(tx_context::sender(ctx) == c.owner, ERR_NOT_OWNER); //TODO: check if it's an owner
+        c.value = 0; //TODO: assign 0 to the counter value
     }
 
     /// Transfer the MyCounter to a new owner.
     public fun transfer_counter(c: MyCounter, new_owner: address, ctx: &mut TxContext) {
-        assert!(tx_context::sender(ctx) == c.owner, ERR_NOT_OWNER);
-        let mut c = c;
-        c.owner = new_owner;
-        // move the whole object to the new owner
-        transfer::transfer(c, new_owner);
+        assert!(tx_context::sender(ctx) == c.owner, ERR_NOT_OWNER); //TODO: check if it's an owner
+        let mut c = c; //TODO: make a counter mutable
+        c.owner = new_owner; //TODO: assign new owner
+        transfer::transfer(c, new_owner); //TODO: transfer the counter to the new owner
     }
 
     /// Helper: read-only view of the value (pure helper for offchain or tests).

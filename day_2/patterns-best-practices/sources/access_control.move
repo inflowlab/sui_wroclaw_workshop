@@ -6,22 +6,22 @@ module patterns_best_practices::access_control {
     public struct Notebook has key { id: UID, owner: address, body: String }
 
     public entry fun create(body: String, ctx: &mut TxContext) {
-        let me = tx_context::sender(ctx);
-        let n = Notebook { id: object::new(ctx), owner: me, body };
-        transfer::transfer(n, me);
+        let me = tx_context::sender(ctx); //TODO Get a sender
+        let n = Notebook { id: object::new(ctx), owner: me, body }; //TODO create a Notebook object
+        transfer::transfer(n, me); //TODO transfer the Notebook object to the sender
     }
 
     public fun append_line(n: &mut Notebook, line: String, ctx: &mut TxContext) {
         assert!(tx_context::sender(ctx) == n.owner, ERR_NOT_OWNER);
         string::append(&mut n.body, string::utf8(b"\n"));
-        string::append(&mut n.body, line);
+        string::append(&mut n.body, line); //TODO: add the line to the end of the body
     }
 
-    public fun get_body(n: &Notebook): String { n.body }
+    public fun get_body(n: &Notebook): String { n.body } // Why do we pass via & ?
 
     public fun transfer_note(n: Notebook, new_owner: address, ctx: &mut TxContext) {
-        assert!(tx_context::sender(ctx) == n.owner, ERR_NOT_OWNER);
-        let mut new_n = n;
+        assert!(tx_context::sender(ctx) == n.owner, ERR_NOT_OWNER); //TODO: add sender check
+        let mut new_n = n; // Why do we need it?
         new_n.owner = new_owner;
         transfer::transfer(new_n, new_owner);
     }
@@ -32,9 +32,10 @@ module patterns_best_practices::access_control {
         Notebook { id: object::new(ctx), owner: tx_context::sender(ctx), body }
     }
 
+    /// Why do we need it?
     #[test_only]
     public fun destruct_for_test(note: Notebook) {
-        let Notebook { id, owner, body } = note;
+        let Notebook { id, owner, body } = note; // Why do we need that?
         id.delete();
     }
 }
