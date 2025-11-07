@@ -51,6 +51,19 @@ Explore Sui’s **object model** in action. Create, update, and transfer custom 
 
 ---
 
+## 🧭 Day 2 — *Patterns & Best Practices*
+**Directory:** `patterns-best-practices/`  
+**README:** *Capability pattern, events, basic access control*
+
+### 🎯 Goal
+Learn common Move design patterns and Sui-specific idioms used in production-grade smart contracts.
+
+### 🕒 Activities
+- Implement and analyze **capability** and **access control** patterns.  
+- Work with **events**, and **ownership** safely.
+
+---
+
 ## 🔢 Day 2 — *My First Object (Counter)*
 **Directory:** `my-first-object-counter/`  
 **README:** *Build a Counter object with owner-only mutation; increment/reset/transfer; run unit tests.*
@@ -63,21 +76,6 @@ Practice secure state mutation and ownership patterns by creating a simple **Cou
 - Implement `increment`, `reset`, and `transfer` entry functions.  
 - Restrict mutation to the object’s owner.  
 - Add unit tests to cover positive and failure scenarios.  
-
----
-
-## 🧭 Day 2 — *Patterns & Best Practices*
-**Directory:** `patterns-best-practices/`  
-**README:** *Capability pattern, events, basic access control, gas gotchas; includes witness and dynamic fields.*
-
-### 🎯 Goal
-Learn common Move design patterns and Sui-specific idioms used in production-grade smart contracts.
-
-### 🕒 Activities
-- Implement and analyze **capability** and **access control** patterns.  
-- Work with **events**, **gas budgets**, and **ownership** safely.  
-- Explore **witness** and **dynamic fields** for composable data structures.  
-- Understand how to avoid common pitfalls in Move/Sui development.  
 
 ---
 
@@ -97,8 +95,8 @@ Combine all learned skills into a working minimal marketplace where:
 | 1 | Hello Move Lab | 2h | Build + publish simple module |
 | 2 | Unit Testing Patterns | 45m | Write and run tests |
 | 2 | Sui Move Objects Demo | 45m | Create, transfer, inspect objects |
-| 2 | My First Object (Counter) | 1h | Implement owner-only mutation |
 | 2 | Patterns & Best Practices | 45m | Learn common patterns |
+| 2 | My First Object (Counter) | 1h | Implement owner-only mutation |
 | 2 | Capstone: Escrow / Marketplace | 2.5h | Build and demo mini project |
 
 ---
