@@ -8,15 +8,13 @@ module patterns_best_practices::capability_tests {
 
     #[test]
     public fun can_mint_with_cap() {
-        let mut sc = test_scenario::begin(ADMIN); //TODO: create a test scenario (sc)
+        //TODO: create a test scenario (sc)
+        //TODO: next transaction from ADMIN
+        //TODO: create AdminCap
+        //TODO: mint a badge
+        //TODO: destruct AdminCap object
 
-        // Admin creates a cap and uses it to mint for Alice
-        test_scenario::next_tx(&mut sc, ADMIN);
-        let cap = capability::new_admin_for_test(test_scenario::ctx(&mut sc)); //TODO: create AdminCap
-        capability::mint_badge(&cap, string::utf8(b"VIP"), 1, ADMIN, test_scenario::ctx(&mut sc)); //TODO: mint a badge
-        capability::destruct_for_test(cap); //TODO: destruct AdminCap object
-
-        test_scenario::end(sc); //end test_scenario
+        //end test_scenario
     }
 
     #[test]

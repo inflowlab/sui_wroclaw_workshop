@@ -9,18 +9,17 @@ module patterns_best_practices::capability {
     /// Init helper: mint an `AdminCap` and transfer it to the publisher
     /// (transaction sender). Intended for setup/demo flows.
     fun init(ctx: &mut TxContext) {
-        let cap = AdminCap { id: object::new(ctx) }; //TODO: Create AdminCap object
-        let sender = tx_context::sender(ctx); //TODO: get a sender address
-        transfer::transfer(cap, sender); //TODO: transfer to sender
+        //TODO: Create AdminCap object
+        //TODO: get a sender address
+        //TODO: transfer to sender
     }
 
     /// Mint a `Badge` gated by possession of `&_cap`. Emits a `Minted` event
     /// and transfers the newly created `Badge` to `recipient`.
     public fun mint_badge(_cap: &AdminCap, name: String, serial: u64, recipient: address, ctx: &mut TxContext) {
-        // Gated by possession of &_cap
         event::emit(Minted { name, serial, to: recipient });
-        let b = Badge { id: object::new(ctx), name: string::utf8(b"Badge 1"), serial: serial }; //TODO: create a Badge object
-        transfer::transfer(b, recipient); //TODO: transfer 
+        //TODO: create a Badge object
+        //TODO: transfer the minted object to the recipient
     }
 
     /// TEST helper: create AdminCap and return (no transfer), for clean unit tests.
