@@ -1,0 +1,8 @@
+[package]
+name = "capstone_escrow_marketplace"
+version = "0.0.1"
+edition = "2024.beta"
+
+
+[addresses]
+market = "0x0"
