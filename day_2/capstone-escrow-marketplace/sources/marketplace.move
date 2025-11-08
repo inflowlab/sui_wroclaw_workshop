@@ -1,8 +1,5 @@
 module market::marketplace {
-    use std::string::{Self, String};
-    use sui::object::{Self, UID};
-    use sui::tx_context::{Self, TxContext};
-    use sui::transfer;
+    use std::string::{String};
     use sui::event;
     use sui::coin::{Self, Coin};
     use sui::sui::SUI;
@@ -38,7 +35,7 @@ module market::marketplace {
     public struct Refunded has copy, drop { listing: address, buyer: address, seller: address, amount: u64 }
 
     /// Create a listing owned by the seller (tx sender).
-    public entry fun create_listing(item: String, price: u64, ctx: &mut TxContext) {
+    public fun create_listing(item: String, price: u64, ctx: &mut TxContext) {
         let seller = tx_context::sender(ctx);
         let l = Listing { id: object::new(ctx), seller, price, item, active: true };
         let addr = object::id_address(&l);
@@ -49,7 +46,7 @@ module market::marketplace {
 
     /// Buyer pays into escrow with Coin<SUI> (can be larger than price).
     /// If larger, split: escrow exactly `price`, return change to buyer.
-    public entry fun buy(l: &mut Listing, mut payment: Coin<SUI>, ctx: &mut TxContext) {
+    public fun buy(l: &mut Listing, mut payment: Coin<SUI>, ctx: &mut TxContext) {
         assert!(l.active, E_INACTIVE);
 
         let buyer = tx_context::sender(ctx);
@@ -78,7 +75,7 @@ module market::marketplace {
     }
 
     /// Buyer confirms delivery -> release funds to seller, close escrow, deactivate listing.
-    public entry fun confirm_delivery(e: Escrow, l: &mut Listing, ctx: &mut TxContext) {
+    public fun confirm_delivery(e: Escrow, l: &mut Listing, ctx: &mut TxContext) {
         assert!(tx_context::sender(ctx) == e.buyer, E_NOT_BUYER);
 
         let Escrow{id,listing_addr, seller, buyer, amount, coin} = e;
@@ -94,14 +91,14 @@ module market::marketplace {
         event::emit(Released { listing: listing_addr, buyer: tx_context::sender(ctx), seller, amount });
     }
 
-    public entry fun request_refund(e: Escrow, ctx: &mut TxContext) {
+    public fun request_refund(e: Escrow, ctx: &mut TxContext) {
         assert!(tx_context::sender(ctx) == e.buyer, E_NOT_SELLER);
         let seller = e.seller;
         transfer::transfer(e, seller);
     }
 
     /// Seller refunds buyer -> send coin back to buyer, close escrow, mark listing active (or canceled).
-    public entry fun refund_buyer(e: Escrow, l: &mut Listing, ctx: &mut TxContext) {
+    public fun refund_buyer(e: Escrow, l: &mut Listing, ctx: &mut TxContext) {
         assert!(tx_context::sender(ctx) == e.seller, E_NOT_SELLER);
 
         let Escrow{id,listing_addr, seller, buyer, amount, coin} = e;
